@@ -1,0 +1,34 @@
+{
+  "risk_levels": {
+    "LOW": {
+      "vehicles": {"type": "standard_suv", "description": "Standard SUV"},
+      "security": {"team_size": 1, "roles": ["driver"], "description": "Driver only"},
+      "comms": {"primary": "cell_phone", "backup": null, "description": "Cell phone"},
+      "medical": {"level": "basic", "description": "First aid kit"}
+    },
+    "MEDIUM": {
+      "vehicles": {"type": "reinforced_suv", "description": "Reinforced SUV"},
+      "security": {"team_size": 2, "roles": ["driver", "security_officer"], "description": "Driver + 1 security"},
+      "comms": {"primary": "cell_phone", "backup": "satellite_phone", "description": "Cell + sat phone backup"},
+      "medical": {"level": "intermediate", "description": "Med kit + hospital map"}
+    },
+    "HIGH": {
+      "vehicles": {"type": "armored_suv", "description": "Armored SUV"},
+      "security": {"team_size": 4, "roles": ["driver", "security_officer", "security_officer", "lead_car_driver"], "description": "Driver + 2 security + lead car"},
+      "comms": {"primary": "satellite_phone", "backup": "radio", "description": "Sat phone primary, radio"},
+      "medical": {"level": "advanced", "description": "Paramedic on team + MEDEVAC plan"}
+    },
+    "CRITICAL": {
+      "vehicles": {"type": "armored_convoy", "description": "Armored convoy (2+ vehicles)"},
+      "security": {"team_size": 8, "roles": ["driver", "security_officer", "security_officer", "security_officer", "lead_car_driver", "lead_car_security", "advance_team_lead", "advance_team_member"], "description": "Full security detail + advance team"},
+      "comms": {"primary": "encrypted_comms", "backup": "satellite_phone", "description": "Encrypted comms + check-in schedule"},
+      "medical": {"level": "maximum", "description": "Paramedic + MEDEVAC on standby"}
+    }
+  },
+  "cost_estimates_usd_per_day": {
+    "LOW": {"vehicles": 200, "personnel": 300, "comms": 20, "medical": 50},
+    "MEDIUM": {"vehicles": 500, "personnel": 800, "comms": 80, "medical": 150},
+    "HIGH": {"vehicles": 1500, "personnel": 2500, "comms": 200, "medical": 500},
+    "CRITICAL": {"vehicles": 3000, "personnel": 5000, "comms": 500, "medical": 1000}
+  }
+}

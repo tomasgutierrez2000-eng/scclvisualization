@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.db
+agents/output/*.html
+.claude/
+eval/
