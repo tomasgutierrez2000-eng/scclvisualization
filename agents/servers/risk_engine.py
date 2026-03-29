@@ -375,18 +375,22 @@ def score_route(route_id: str, hour: Optional[int] = None) -> dict:
     conn = get_routes_db()
     try:
         h3_ids = [c["h3_cell_id"] for c in cells]
-        placeholders = ",".join("?" * len(h3_ids))
-        scouted = conn.execute(
-            f"SELECT COUNT(*) as cnt FROM scouting_status "
-            f"WHERE h3_cell_id IN ({placeholders}) AND status != 'unscouted'",
-            h3_ids,
-        ).fetchone()
+        if not h3_ids:
+            scouted = {"cnt": 0}
+            traversed = {"cnt": 0}
+        else:
+            placeholders = ",".join("?" * len(h3_ids))
+            scouted = conn.execute(
+                f"SELECT COUNT(*) as cnt FROM scouting_status "
+                f"WHERE h3_cell_id IN ({placeholders}) AND status != 'unscouted'",
+                h3_ids,
+            ).fetchone()
 
-        traversed = conn.execute(
-            f"SELECT COUNT(DISTINCT h3_cell_id) as cnt FROM traversals "
-            f"WHERE h3_cell_id IN ({placeholders})",
-            h3_ids,
-        ).fetchone()
+            traversed = conn.execute(
+                f"SELECT COUNT(DISTINCT h3_cell_id) as cnt FROM traversals "
+                f"WHERE h3_cell_id IN ({placeholders})",
+                h3_ids,
+            ).fetchone()
     finally:
         conn.close()
 

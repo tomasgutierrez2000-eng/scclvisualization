@@ -119,7 +119,11 @@ def plan_route(req: RoutePlanRequest, user_id: str = Depends(_verify_ops_token))
     Falls back to Dijkstra state-level routing if Google API fails.
     """
     try:
-        from agents.servers.google_maps_server import get_road_route, cache_route
+        from agents.servers.google_maps_server import (
+            get_road_route, cache_route,
+            GoogleAPIError, GoogleAPITimeout, GoogleQuotaExceeded,
+            GoogleAuthError, NoRouteFound, GeocodingFailed,
+        )
 
         routes = get_road_route(
             req.origin, req.destination, req.waypoints, req.alternatives
@@ -133,8 +137,8 @@ def plan_route(req: RoutePlanRequest, user_id: str = Depends(_verify_ops_token))
 
         return {"routes": results, "source": "google_maps"}
 
-    except Exception as e:
-        # Fallback to Dijkstra
+    except GoogleAPIError as e:
+        # Fallback to Dijkstra only for Google API failures, not programming errors
         from agents.servers.geo_server import calculate_route
 
         try:
