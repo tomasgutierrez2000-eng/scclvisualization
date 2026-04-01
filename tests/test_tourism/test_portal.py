@@ -2,7 +2,7 @@
 import json
 import pytest
 
-from agents.portal.app import app, sanitize_text
+from tourism.portal.app import app, sanitize_text
 
 
 @pytest.fixture

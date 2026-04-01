@@ -1,8 +1,8 @@
 """Tests for the deterministic Python orchestrator."""
 import pytest
 
-from agents.orchestrator import parse_intake_simple, plan_route, assess_security, run_pipeline
-from agents.schemas import ClientRequest
+from tourism.orchestrator import parse_intake_simple, plan_route, assess_security, run_pipeline
+from tourism.schemas import ClientRequest
 
 
 class TestIntakeParsing:

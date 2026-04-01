@@ -7,7 +7,7 @@ from pathlib import Path
 
 DB_PATH = Path(__file__).parent / "intel.db"
 SCHEMA_PATH = Path(__file__).parent / "schema.sql"
-DATA_DIR = Path(__file__).parent.parent / "data"
+DATA_DIR = Path(__file__).parent.parent / "data"  # shared/data/
 
 
 def get_db(db_path: Path | None = None) -> sqlite3.Connection:

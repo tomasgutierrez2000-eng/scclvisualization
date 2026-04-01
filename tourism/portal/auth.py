@@ -6,7 +6,7 @@ from pathlib import Path
 
 from flask import request, jsonify, g
 
-DB_PATH = Path(__file__).parent.parent / "db" / "intel.db"
+DB_PATH = Path(__file__).parent.parent.parent / "shared" / "db" / "intel.db"
 
 
 def get_db() -> sqlite3.Connection:

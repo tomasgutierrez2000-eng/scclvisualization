@@ -25,7 +25,7 @@ from typing import Optional
 
 import requests
 
-from agents.db.connections import get_routes_db
+from shared.db.connections import get_routes_db
 
 GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "")
 DIRECTIONS_URL = "https://maps.googleapis.com/maps/api/directions/json"

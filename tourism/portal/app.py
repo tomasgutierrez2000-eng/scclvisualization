@@ -270,7 +270,7 @@ def list_checkpoints(state_id: str):
 def create_app(db_path: str | None = None) -> Flask:
     """Factory function for testing with custom DB path."""
     if db_path:
-        import agents.portal.auth as auth_module
+        import tourism.portal.auth as auth_module
         auth_module.DB_PATH = Path(db_path)
     return app
 

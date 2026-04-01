@@ -24,8 +24,8 @@ import json
 import sqlite3
 from pathlib import Path
 
-DATA_DIR = Path(__file__).parent.parent / "data"
-DB_PATH = Path(__file__).parent.parent / "db" / "intel.db"
+DATA_DIR = Path(__file__).parent / "data"
+DB_PATH = Path(__file__).parent / "db" / "intel.db"
 
 # Load static data at module level
 _state_data = json.loads((DATA_DIR / "venezuela_states.json").read_text())

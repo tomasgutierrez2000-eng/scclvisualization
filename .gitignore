@@ -1,6 +1,6 @@
 __pycache__/
 *.pyc
 *.db
-agents/output/*.html
+tourism/output/*.html
 .claude/
 eval/

@@ -20,10 +20,10 @@ import webbrowser
 from datetime import datetime
 from pathlib import Path
 
-from ..schemas.route_proposal import RouteProposal
-from ..schemas.security_briefing import SecurityBriefing
+from tourism.schemas.route_proposal import RouteProposal
+from tourism.schemas.security_briefing import SecurityBriefing
 
-OUTPUT_DIR = Path(__file__).parent.parent.parent / "agents" / "output"
+OUTPUT_DIR = Path(__file__).parent
 
 # Venezuelan state approximate center coordinates (lat, lng)
 STATE_COORDS = {
