@@ -15,7 +15,7 @@ from unittest.mock import patch
 
 import pytest
 
-# The risk engine imports from agents.db.connections which needs DB paths
+# The risk engine imports from shared.db.connections which needs DB paths
 # We patch the DB paths to use test databases
 TEST_DIR = Path(__file__).parent
 TEST_INTEL_DB = TEST_DIR / "test_intel.db"
@@ -124,52 +124,52 @@ def setup_test_dbs(tmp_path):
     routes_conn.close()
 
     # Patch the DB paths
-    with patch("agents.db.connections.INTEL_DB_PATH", intel_db), \
-         patch("agents.db.connections.ROUTES_DB_PATH", routes_db):
+    with patch("shared.db.connections.INTEL_DB_PATH", intel_db), \
+         patch("shared.db.connections.ROUTES_DB_PATH", routes_db):
         yield {"intel_db": intel_db, "routes_db": routes_db}
 
 
 class TestStateRisk:
     def test_known_state_high(self, setup_test_dbs):
-        from agents.servers.risk_engine import compute_state_risk
+        from ruta.risk_engine import compute_state_risk
         score = compute_state_risk("ZU")
         assert score == 6.0  # HIGH = 6
 
     def test_known_state_low(self, setup_test_dbs):
-        from agents.servers.risk_engine import compute_state_risk
+        from ruta.risk_engine import compute_state_risk
         score = compute_state_risk("CA")
         assert score == 1.0  # LOW = 1
 
     def test_unknown_state_defaults_critical(self, setup_test_dbs):
-        from agents.servers.risk_engine import compute_state_risk
+        from ruta.risk_engine import compute_state_risk
         score = compute_state_risk("XX")
         assert score == 10.0  # no data = CRITICAL
 
 
 class TestRoadRisk:
     def test_highway(self):
-        from agents.servers.risk_engine import compute_road_risk
+        from ruta.risk_engine import compute_road_risk
         assert compute_road_risk("highway") == 1.0
 
     def test_unpaved(self):
-        from agents.servers.risk_engine import compute_road_risk
+        from ruta.risk_engine import compute_road_risk
         assert compute_road_risk("unpaved") == 8.0
 
     def test_unknown(self):
-        from agents.servers.risk_engine import compute_road_risk
+        from ruta.risk_engine import compute_road_risk
         assert compute_road_risk(None) == 5.0
 
 
 class TestRecencyRisk:
     def test_cold_start_no_data(self, setup_test_dbs):
         """Never traversed, never scouted = 0 (neutral, not maximum)."""
-        from agents.servers.risk_engine import compute_recency_risk
+        from ruta.risk_engine import compute_recency_risk
         score = compute_recency_risk("cell_never_seen")
         assert score == 0.0
 
     def test_recently_traversed(self, setup_test_dbs):
         """Traversed today = low recency risk."""
-        from agents.servers.risk_engine import compute_recency_risk
+        from ruta.risk_engine import compute_recency_risk
         # Insert a recent traversal
         conn = sqlite3.connect(str(setup_test_dbs["routes_db"]))
         now = datetime.now(timezone.utc).isoformat()
@@ -186,7 +186,7 @@ class TestRecencyRisk:
 
     def test_stale_traversal(self, setup_test_dbs):
         """Traversed 30 days ago = capped at 10."""
-        from agents.servers.risk_engine import compute_recency_risk
+        from ruta.risk_engine import compute_recency_risk
         conn = sqlite3.connect(str(setup_test_dbs["routes_db"]))
         old_date = (datetime.now(timezone.utc) - timedelta(days=31)).isoformat()
         conn.execute(
@@ -203,22 +203,22 @@ class TestRecencyRisk:
 
 class TestTimeOfDayRisk:
     def test_daytime(self):
-        from agents.servers.risk_engine import compute_time_of_day_risk
+        from ruta.risk_engine import compute_time_of_day_risk
         assert compute_time_of_day_risk(12) == 0.0
 
     def test_nighttime(self):
-        from agents.servers.risk_engine import compute_time_of_day_risk
+        from ruta.risk_engine import compute_time_of_day_risk
         assert compute_time_of_day_risk(2) == 3.0
 
     def test_dawn(self):
-        from agents.servers.risk_engine import compute_time_of_day_risk
+        from ruta.risk_engine import compute_time_of_day_risk
         assert compute_time_of_day_risk(6) == 1.0
 
 
 class TestCompositeScore:
     def test_known_inputs(self, setup_test_dbs):
         """Deterministic test with known inputs."""
-        from agents.servers.risk_engine import score_cell
+        from ruta.risk_engine import score_cell
 
         result = score_cell(
             h3_cell_id="test_cell",
@@ -239,7 +239,7 @@ class TestCompositeScore:
 
     def test_high_risk_scenario(self, setup_test_dbs):
         """High risk state + unpaved road + night = high composite."""
-        from agents.servers.risk_engine import score_cell
+        from ruta.risk_engine import score_cell
 
         result = score_cell(
             h3_cell_id="danger_cell",
@@ -260,7 +260,7 @@ class TestCompositeScore:
 
     def test_score_clamped_0_to_10(self, setup_test_dbs):
         """Score should never exceed 10.0."""
-        from agents.servers.risk_engine import score_cell
+        from ruta.risk_engine import score_cell
 
         result = score_cell(
             h3_cell_id="max_cell",
@@ -278,7 +278,7 @@ class TestCompositeScore:
 class TestIncidentProximity:
     def test_nearby_incident(self, setup_test_dbs):
         """Incident within 10km should contribute to risk."""
-        from agents.servers.risk_engine import compute_incident_proximity
+        from ruta.risk_engine import compute_incident_proximity
 
         conn = sqlite3.connect(str(setup_test_dbs["intel_db"]))
         conn.execute(
@@ -294,7 +294,7 @@ class TestIncidentProximity:
 
     def test_distant_incident_no_effect(self, setup_test_dbs):
         """Incident far away should not contribute."""
-        from agents.servers.risk_engine import compute_incident_proximity
+        from ruta.risk_engine import compute_incident_proximity
 
         conn = sqlite3.connect(str(setup_test_dbs["intel_db"]))
         conn.execute(
@@ -310,7 +310,7 @@ class TestIncidentProximity:
 
     def test_no_incidents(self, setup_test_dbs):
         """No incidents = 0 risk."""
-        from agents.servers.risk_engine import compute_incident_proximity
+        from ruta.risk_engine import compute_incident_proximity
         score = compute_incident_proximity(10.0, -67.0)
         assert score == 0.0
 
@@ -318,14 +318,14 @@ class TestIncidentProximity:
 class TestRouteScoring:
     def test_empty_route(self, setup_test_dbs):
         """Route with no cells should return max risk."""
-        from agents.servers.risk_engine import score_route
+        from ruta.risk_engine import score_route
         result = score_route("nonexistent_route")
         assert result["avg_score"] == 10.0
         assert result["cell_scores"] == []
 
     def test_route_with_cells(self, setup_test_dbs):
         """Route with cells should return aggregate scores."""
-        from agents.servers.risk_engine import score_route
+        from ruta.risk_engine import score_route
 
         conn = sqlite3.connect(str(setup_test_dbs["routes_db"]))
         conn.execute(

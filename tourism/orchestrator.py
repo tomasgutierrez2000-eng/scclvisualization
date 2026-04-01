@@ -27,10 +27,10 @@ import json
 import sys
 from datetime import datetime, timezone
 
-from .schemas import ClientRequest, RouteProposal, SecurityBriefing, StateAssessment
-from .schemas.security_briefing import ThreatBreakdown
-from .servers.geo_server import calculate_route, geocode_location
-from .servers.security_server import (
+from tourism.schemas import ClientRequest, RouteProposal, SecurityBriefing, StateAssessment
+from tourism.schemas.security_briefing import ThreatBreakdown
+from shared.geo_server import calculate_route, geocode_location
+from shared.security_server import (
     assess_route_segment_risk,
     get_analyst_notes,
     get_no_go_zones,
@@ -115,7 +115,7 @@ def plan_route(request: ClientRequest) -> RouteProposal:
     if "error" in route_data:
         raise RuntimeError(f"Route planning failed: {route_data['error']}")
 
-    from .schemas.route_proposal import RouteSegment, Route
+    from tourism.schemas.route_proposal import RouteSegment, Route
 
     segments = [
         RouteSegment(

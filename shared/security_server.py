@@ -30,7 +30,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from dataclasses import dataclass, field
 
-DB_PATH = Path(__file__).parent.parent / "db" / "intel.db"
+DB_PATH = Path(__file__).parent / "db" / "intel.db"
 
 RISK_LEVELS = {"LOW": 1, "MEDIUM": 2, "HIGH": 3, "CRITICAL": 4}
 RISK_NAMES = {v: k for k, v in RISK_LEVELS.items()}

@@ -20,7 +20,7 @@ import math
 from datetime import datetime, timezone
 from typing import Optional
 
-from agents.db.connections import get_intel_db, get_routes_db
+from shared.db.connections import get_intel_db, get_routes_db
 
 # Component weights (must sum to 1.0)
 WEIGHTS = {

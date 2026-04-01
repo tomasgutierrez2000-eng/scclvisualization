@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from agents.db.seed import main as seed_main, get_db, init_schema, seed_states, seed_initial_threat_levels
+from shared.db.seed import main as seed_main, get_db, init_schema, seed_states, seed_initial_threat_levels
 
 
 @pytest.fixture

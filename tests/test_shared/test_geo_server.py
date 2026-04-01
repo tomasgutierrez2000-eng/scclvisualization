@@ -1,7 +1,7 @@
 """Tests for the Geo MCP Server: routing and geocoding."""
 import pytest
 
-from agents.servers.geo_server import calculate_route, geocode_location, estimate_travel_time, _dijkstra
+from shared.geo_server import calculate_route, geocode_location, estimate_travel_time, _dijkstra
 
 
 def test_geocode_known_city():

@@ -1,7 +1,7 @@
 """Tests for the Security MCP Server: data fusion and threat assessment."""
 import pytest
 
-from agents.servers.security_server import (
+from shared.security_server import (
     fuse_intel,
     get_state_threat_level,
     get_no_go_zones,

@@ -60,7 +60,7 @@ def execute_with_retry(conn: sqlite3.Connection, sql: str, params: tuple = ()) -
 
 def init_routes_db() -> None:
     """Initialize routes.db by running the schema SQL."""
-    schema_path = DB_DIR / "routes_schema.sql"
+    schema_path = DB_DIR.parent.parent / "ruta" / "db" / "routes_schema.sql"
     if not schema_path.exists():
         raise FileNotFoundError(f"routes_schema.sql not found at {schema_path}")
     conn = get_routes_db()

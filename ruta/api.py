@@ -5,7 +5,7 @@ All DB-touching endpoints use sync `def` (not `async def`)
 to avoid SQLite write-lock deadlocks. FastAPI runs them in
 a threadpool automatically.
 
-Run: uvicorn agents.servers.api:app --port 5060
+Run: uvicorn ruta.api:app --port 5060
 """
 import hashlib
 import json
@@ -16,8 +16,8 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException, Header, Depends
 from pydantic import BaseModel, Field
 
-from agents.db.connections import get_routes_db, get_intel_db, init_routes_db
-from agents.servers.risk_engine import score_cell, score_route, score_and_cache_cell
+from shared.db.connections import get_routes_db, get_intel_db, init_routes_db
+from ruta.risk_engine import score_cell, score_route, score_and_cache_cell
 
 app = FastAPI(
     title="RUTA Route Intelligence API",
@@ -119,7 +119,7 @@ def plan_route(req: RoutePlanRequest, user_id: str = Depends(_verify_ops_token))
     Falls back to Dijkstra state-level routing if Google API fails.
     """
     try:
-        from agents.servers.google_maps_server import (
+        from ruta.google_maps_server import (
             get_road_route, cache_route,
             GoogleAPIError, GoogleAPITimeout, GoogleQuotaExceeded,
             GoogleAuthError, NoRouteFound, GeocodingFailed,
@@ -139,7 +139,7 @@ def plan_route(req: RoutePlanRequest, user_id: str = Depends(_verify_ops_token))
 
     except GoogleAPIError as e:
         # Fallback to Dijkstra only for Google API failures, not programming errors
-        from agents.servers.geo_server import calculate_route
+        from shared.geo_server import calculate_route
 
         try:
             fallback = calculate_route(req.origin, req.destination)
@@ -155,7 +155,7 @@ def plan_route(req: RoutePlanRequest, user_id: str = Depends(_verify_ops_token))
 @app.get("/route/{route_id}")
 def get_route(route_id: str, user_id: str = Depends(_verify_ops_token)):
     """Get route details with all H3 cells."""
-    from agents.servers.google_maps_server import get_cached_route
+    from ruta.google_maps_server import get_cached_route
 
     route = get_cached_route(route_id)
     if route is None:

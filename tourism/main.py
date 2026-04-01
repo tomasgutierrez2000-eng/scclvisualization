@@ -2,8 +2,8 @@
 """Venezuela Transport Logistics - Trip Planning CLI.
 
 Usage:
-    python -m agents.main "Caracas to Maracaibo, 3 days"
-    python -m agents.main --interactive
+    python -m tourism.main "Caracas to Maracaibo, 3 days"
+    python -m tourism.main --interactive
 """
 import sys
 from pathlib import Path
@@ -11,19 +11,19 @@ from pathlib import Path
 # Ensure project root is in path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from agents.orchestrator import run_pipeline
-from agents.output.heat_map import generate_heat_map
+from tourism.orchestrator import run_pipeline
+from tourism.output.heat_map import generate_heat_map
 
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python -m agents.main \"<trip request>\"")
-        print("       python -m agents.main --interactive")
+        print("Usage: python -m tourism.main \"<trip request>\"")
+        print("       python -m tourism.main --interactive")
         print()
         print("Examples:")
-        print("  python -m agents.main \"Caracas to Maracaibo, 3 days\"")
-        print("  python -m agents.main \"Valencia to San Cristobal\"")
-        print("  python -m agents.main \"Plan a trip from Barquisimeto to Ciudad Bolivar, 5 days\"")
+        print("  python -m tourism.main \"Caracas to Maracaibo, 3 days\"")
+        print("  python -m tourism.main \"Valencia to San Cristobal\"")
+        print("  python -m tourism.main \"Plan a trip from Barquisimeto to Ciudad Bolivar, 5 days\"")
         sys.exit(1)
 
     if sys.argv[1] == "--interactive":
